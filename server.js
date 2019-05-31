@@ -28,6 +28,10 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // Connect to the Mongo DB
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+
+mongoose.connect(MONGODB_URI);
+
 mongoose.connect("mongodb://localhost/Mongo-Scraper", { useNewUrlParser: true });
 
 // Setting up Handlebars Middleware
@@ -84,7 +88,7 @@ var hbsObject = {
   article: data
 };
 console.log(hbsObject);
-res.render(hbsObject);
+res.render("index", hbsObject);
   });
 });
 
@@ -93,7 +97,7 @@ app.get("/saved", function(req, res) {
     var hbsObject = {
       article: articles
     };
-    res.render(hbsObject);
+    res.render("saved", hbsObject);
   });
 });
 
