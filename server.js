@@ -1,6 +1,9 @@
 var express = require("express");
 var logger = require("morgan");
 var mongoose = require("mongoose");
+var exphbs = require("express-handlebars");
+var path = require("path");
+
 
 // Scraping Tools
 var axios = require("axios");
@@ -27,50 +30,74 @@ app.use(express.static("public"));
 // Connect to the Mongo DB
 mongoose.connect("mongodb://localhost/Mongo-Scraper", { useNewUrlParser: true });
 
-// Routes
+// Setting up Handlebars Middleware
+app.engine("handlebars", exphbs({defaultLayout: "main"}));
+app.set("view engine", "handlebars");
+
 
 // A GET route for scraping the foxnews website
 app.get("/scrape", function(req, res) {
-    // First, we grab the body of the html with axios
-    axios.get("http://www.foxnews.com/").then(function(response) {
-      // Then, we load that into cheerio and save it to $ for a shorthand selector
-      var $ = cheerio.load(response.data);
-  
-      // Now, we grab every h2 within an article tag, and do the following:
-      $("article h2").each(function(i, element) {
-        // Save an empty result object
-        var result = {};
-  
-        // Add the text and href of every link, and save them as properties of the result object
-        result.title = $(this)
-          .children("a")
-          .text();
-        result.link = $(this)
-          .children("a")
-          .attr("href");
-        result.summary = $(this)
-          .children("a")
-          .text();
-  
-        // Create a new Article using the `result` object built from scraping
-        db.Article.create(result)
-          .then(function(dbArticle) {
-            // View the added result in the console
-            console.log(dbArticle);
-          })
-          .catch(function(err) {
-            // If an error occurred, log it
-            console.log(err);
-          });
+  // First, we grab the body of the html with axios
+  axios.get("http://www.foxnews.com/").then(function(response) {
+    // Then, we load that into cheerio and save it to $ for a shorthand selector
+    var $ = cheerio.load(response.data);
+    
+    // Now, we grab every h2 within an article tag, and do the following:
+    $("#title").each(function(i, element) {
+      // Save an empty result object
+      var result = {};
+      
+      // Add the text and href of every link, and save them as properties of the result object
+      result.title = $(this)
+      .children("a")
+      .text();
+      result.link = $(this)
+      .children("a")
+      .attr("href");
+      result.summary = $(this)
+      .children("a")
+      .text();
+      
+      
+      
+      // Create a new Article using the `result` object built from scraping
+      db.Article.create(result)
+      .then(function(dbArticle) {
+        // View the added result in the console
+        console.log(dbArticle);
+      })
+      .catch(function(err) {
+        // If an error occurred, log it
+        console.log(err);
       });
-  
-      // Send a message to the client
-      res.send("Scrape Complete");
     });
+    
+    // Send a message to the client
+    res.send("Scrape Complete");
   });
-  
+});
 
-  // Route for getting all Articles from the db
+// Render Homepage from Handlebars
+app.get("/", function(req, res) {
+  db.Article.find({"saved": false}, function(err, data) {
+var hbsObject = {
+  article: data
+};
+console.log(hbsObject);
+res.render(hbsObject);
+  });
+});
+
+app.get("/saved", function(req, res) {
+  db.Article.find({"saved": true}).populate("notes").exec(function(err, articles) {
+    var hbsObject = {
+      article: articles
+    };
+    res.render(hbsObject);
+  });
+});
+
+// Route for getting all Articles from the db
 app.get("/articles", function(req, res) {
     // Grab every document in the Articles collection
     db.Article.find({})
@@ -116,7 +143,7 @@ app.post("/articles/:id", function(req, res) {
         res.json(err);
       });
   });
-  
+
   // Start the server
   app.listen(PORT, function() {
     console.log("App running on port " + PORT + "!");
