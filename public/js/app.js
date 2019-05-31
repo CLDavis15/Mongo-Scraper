@@ -21,9 +21,9 @@ $(".save").on("click", function() {
     var thisId = $(this).attr("data-id");
     $.ajax({
         method: "POST",
-        url: "/articles/save/" + thisId
+        url: "/saved" + thisId
     }).done(function(data) {
-        window.location = "/"
+        window.location = "/saved"
     })
 });
 
@@ -32,7 +32,7 @@ $(".delete").on("click", function() {
     var thisId = $(this).attr("data-id");
     $.ajax({
         method: "POST",
-        url: "/articles/delete/" + thisId
+        url: "/saved/delete/" + thisId
     }).done(function(data) {
         window.location = "/saved"
     })
