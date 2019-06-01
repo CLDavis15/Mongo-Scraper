@@ -11,7 +11,28 @@
 
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         <!--CSS Style Sheet-->
-        <link rel="stylesheet" href="/assets/css/style.css" type="text/css" />
+        <link rel="stylesheet" href="./public/css/style.css" type="text/html" />
+        <style>
+            body:after {
+                content : "";
+                display: block;
+                position: absolute;
+                top: 0;
+                left: 0;
+                background-image: url(./images/newspaper.jpg);
+                background-repeat:no-repeat;
+                width: 100%;
+                height: auto;
+                min-height: 100vh;
+                opacity : 0.3;
+                z-index: -1;
+            }
+            @media only screen and (min-device-width: 400px) {
+                body { 
+                    background-image: url(./images/newspaper.jpg); 
+            }
+}
+        </style>
 
         <title>Mongo Article Scraper!</title>
     </head>
@@ -33,6 +54,6 @@
     {{{ body }}}
 
         <!--External JS Link-->
-        <script src="/assets/js/app.js"></script>
+        <script src="./public/js/app.js"></script>
     </body>
 </html>

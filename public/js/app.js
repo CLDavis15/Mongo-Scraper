@@ -17,13 +17,13 @@ $(".navbar-nav li").click(function() {
 });
 
 //Handle Save Article button
-$(".save").on("click", function() {
+$(".saved").on("click", function() {
     var thisId = $(this).attr("data-id");
     $.ajax({
         method: "POST",
         url: "/saved" + thisId
     }).done(function(data) {
-        window.location = "/saved"
+        window.location = "/"
     })
 });
 
@@ -32,7 +32,7 @@ $(".delete").on("click", function() {
     var thisId = $(this).attr("data-id");
     $.ajax({
         method: "POST",
-        url: "/saved/delete/" + thisId
+        url: "/articles/delete/" + thisId
     }).done(function(data) {
         window.location = "/saved"
     })
@@ -46,7 +46,7 @@ $(".saveNote-btn").on("click", function() {
     }else {
       $.ajax({
             method: "POST",
-            url: "/Notes/saved/" + thisId,
+            url: "/notes/saved/" + thisId,
             data: {
               text: $("#noteText" + thisId).val()
             }
@@ -54,7 +54,7 @@ $(".saveNote-btn").on("click", function() {
               // Log the response
               console.log(data);
               // Empty the notes section
-              $("#notes").empty();
+              $("#noteText").empty();
               window.location = "/saved"
           });
     }
@@ -66,7 +66,7 @@ $(".deleteNote-btn").on("click", function() {
     var articleId = $(this).attr("data-article-id");
     $.ajax({
         method: "DELETE",
-        url: "/Note/delete/" + articleId
+        url: "/notes/delete/" + articleId
     }).done(function(data) {
         console.log(data)
         window.location = "/saved"
