@@ -25,14 +25,14 @@ app.use(logger("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 // Make public a static folder
-app.use(express.static(__dirname +"/public"));
+app.use(express.static(__dirname + "/public"));
 
-// // Connect to the Mongo DB
-// var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+// Connect to the Mongo DB
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/Mongo-Scraper";
 
-// mongoose.connect(MONGODB_URI);
+mongoose.connect(MONGODB_URI);
 
-mongoose.connect("mongodb://localhost/Mongo-Scraper", { useNewUrlParser: true });
+// mongoose.connect("mongodb://localhost/Mongo-Scraper", { useNewUrlParser: true });
 
 // Setting up Handlebars Middleware
 app.engine("handlebars", exphbs({defaultLayout: "main"}));
@@ -131,7 +131,7 @@ app.get("/articles", function(req, res) {
   });
 
   // Route for saving/updating an Article's associated Note
-app.post("/articles/:id", function(req, res) {
+app.post("/articles/saved:id", function(req, res) {
     // Create a new note and pass the req.body to the entry
     db.Note.create(req.body)
       .then(function(dbNote) {
